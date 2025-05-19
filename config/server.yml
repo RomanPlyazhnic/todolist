@@ -1,0 +1,6 @@
+name: "todolist"
+protocol: "rest"
+port: 8080
+timeout: "10s"
+env: "dev"
+version: "v0.0.1"
