@@ -1,18 +1,23 @@
+// Entry point for the application
+
 package main
 
 import (
 	"flag"
 
+	"github.com/RomanPlyazhnic/todolist/internal/app"
 	"github.com/RomanPlyazhnic/todolist/internal/config"
-	"github.com/RomanPlyazhnic/todolist/internal/server"
 )
 
+// Launch application
 func main() {
 	cfg := setupConfig()
 
-	server.Run(cfg)
+	app.Run(cfg)
 }
 
+// setupConfig takes .yml config if --config option is provided
+// Otherwise - configuration from ENV variables
 func setupConfig() *config.Data {
 	var cfgPath string
 	flag.StringVar(&cfgPath, "config", "", "config path")

@@ -1,3 +1,5 @@
+// Load server configuration
+
 package config
 
 import (
@@ -7,6 +9,7 @@ import (
 	"github.com/ilyakaznacheev/cleanenv"
 )
 
+// Data represents configuration format
 type Data struct {
 	Name     string        `yaml:"name" env:"NAME" env-default:"todolist"`
 	Protocol string        `yaml:"protocol" env:"PROTOCOL" env-default:"rest"` // "rest" or "grpc"
@@ -16,6 +19,7 @@ type Data struct {
 	Version  string        `yaml:"version" env:"VERSION" env-default:"0.0.1"`
 }
 
+// FromPath returns configuration based on .yml file
 func FromPath(path string) *Data {
 	const op = "config.New"
 
@@ -29,6 +33,7 @@ func FromPath(path string) *Data {
 	return &cfg
 }
 
+// FromEnv returns configuration based on ENV variables
 func FromEnv() *Data {
 	const op = "config.New"
 
