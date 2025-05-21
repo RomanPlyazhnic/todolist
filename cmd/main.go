@@ -5,7 +5,7 @@ package main
 import (
 	"flag"
 
-	"github.com/RomanPlyazhnic/todolist/internal/app/server"
+	"github.com/RomanPlyazhnic/todolist/internal/app"
 	"github.com/RomanPlyazhnic/todolist/internal/config"
 )
 
@@ -16,7 +16,7 @@ func main() {
 		panic(err)
 	}
 
-	server.Run(cfg)
+	app.Run(cfg)
 }
 
 // setupConfig takes .yml config if --config option is provided

@@ -4,9 +4,8 @@ package config
 
 import (
 	"fmt"
-	"time"
-
 	"github.com/ilyakaznacheev/cleanenv"
+	"time"
 )
 
 // Data represents configuration format
@@ -17,12 +16,17 @@ type Data struct {
 	Timeout  time.Duration `yaml:"timeout" env:"TIMEOUT" env-default:"10s"`
 	Env      string        `yaml:"env" env:"ENV" env-default:"todolist"`
 	Version  string        `yaml:"version" env:"VERSION" env-default:"0.0.1"`
-	Secret   string        `env:"SECRET"`
+	JWT      JWT           `yaml:"jwt"`
+}
+
+type JWT struct {
+	Secret        string        `env:"JWT_SECRET"`
+	TokenDuration time.Duration `yaml:"duration" env:"JWT_DURATION" env-default:"1h"`
 }
 
 // FromPath returns configuration
 // If config path presents - read .yml config and override it with ENV variables
-// If config path not presents - read config from ENV variables
+// If a config path not presents - read config from ENV variables
 func FromPath(path string) (*Data, error) {
 	const op = "config.New"
 

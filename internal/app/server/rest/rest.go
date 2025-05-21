@@ -4,21 +4,23 @@ package rest
 
 import (
 	"context"
-	"github.com/RomanPlyazhnic/todolist/internal/config"
 	"github.com/go-chi/chi/v5"
 	"github.com/go-chi/chi/v5/middleware"
 	"github.com/go-chi/httplog/v2"
 	"log/slog"
 	"net/http"
 	"strconv"
+
+	"github.com/RomanPlyazhnic/todolist/internal/app/auth/jwt"
+	"github.com/RomanPlyazhnic/todolist/internal/config"
 )
 
 // App represents the main application object
 type App struct {
 	srv    *http.Server
 	router *chi.Mux
-	Config *config.Data
-	Logger *httplog.Logger
+	config *config.Data
+	logger *httplog.Logger
 }
 
 // New initializes and setups the application
@@ -50,8 +52,8 @@ func New(cfg *config.Data) *App {
 	app := App{
 		srv:    srv,
 		router: router,
-		Config: cfg,
-		Logger: logger,
+		config: cfg,
+		logger: logger,
 	}
 
 	app.handleRoutes()
@@ -63,22 +65,38 @@ func New(cfg *config.Data) *App {
 func (a *App) Start() {
 	const op = "app.stop"
 
-	a.Logger.Info("app closed", op, a.srv.ListenAndServe())
+	a.logger.Info("starting server")
+	a.logger.Info("app closed", op, a.srv.ListenAndServe())
 }
 
 // Shutdown stops the server
 func (a *App) Shutdown() {
 	const op = "app.shutdown"
 
-	a.Logger.Info("shutting down...", op, true)
+	a.logger.Info("shutting down...", op, true)
 	if err := a.srv.Shutdown(context.Background()); err != nil {
-		a.Logger.Error("%s: %v", op, err)
+		a.logger.Error("%s: %v", op, err)
 	}
+}
+
+func (a *App) Config() *config.Data {
+	return a.config
+}
+
+func (a *App) Logger() *httplog.Logger {
+	return a.logger
 }
 
 // handleRoutes describes application's routes
 func (a *App) handleRoutes() {
 	a.router.Get("/", func(w http.ResponseWriter, r *http.Request) {
-		w.Write([]byte("hi"))
+		tkn, _ := jwt.CreateToken(a, "user1")
+		w.Write([]byte(tkn))
+		_, err := jwt.ValidateToken(a, tkn)
+		if err != nil {
+			w.Write([]byte("not successfully validated token"))
+			return
+		}
+		w.Write([]byte("successfully validated token"))
 	})
 }
