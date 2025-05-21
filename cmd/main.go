@@ -5,7 +5,7 @@ package main
 import (
 	"flag"
 
-	"github.com/RomanPlyazhnic/todolist/internal/app"
+	"github.com/RomanPlyazhnic/todolist/internal/app/server"
 	"github.com/RomanPlyazhnic/todolist/internal/config"
 )
 
@@ -16,7 +16,7 @@ func main() {
 		panic(err)
 	}
 
-	app.Run(cfg)
+	server.Run(cfg)
 }
 
 // setupConfig takes .yml config if --config option is provided
@@ -26,9 +26,5 @@ func setupConfig() (*config.Data, error) {
 	flag.StringVar(&cfgPath, "config", "", "config path")
 	flag.Parse()
 
-	if cfgPath != "" {
-		return config.FromPath(cfgPath)
-	}
-
-	return config.FromEnv()
+	return config.FromPath(cfgPath)
 }

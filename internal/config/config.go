@@ -17,29 +17,26 @@ type Data struct {
 	Timeout  time.Duration `yaml:"timeout" env:"TIMEOUT" env-default:"10s"`
 	Env      string        `yaml:"env" env:"ENV" env-default:"todolist"`
 	Version  string        `yaml:"version" env:"VERSION" env-default:"0.0.1"`
+	Secret   string        `env:"SECRET"`
 }
 
-// FromPath returns configuration based on .yml file
+// FromPath returns configuration
+// If config path presents - read .yml config and override it with ENV variables
+// If config path not presents - read config from ENV variables
 func FromPath(path string) (*Data, error) {
 	const op = "config.New"
 
 	var cfg Data
+	var err error
 
-	err := cleanenv.ReadConfig(path, &cfg)
-	if err != nil {
-		return &Data{}, fmt.Errorf("%s: %w", op, err)
+	if path != "" {
+		err = cleanenv.ReadConfig(path, &cfg)
+		if err != nil {
+			return &Data{}, fmt.Errorf("%s: %w", op, err)
+		}
 	}
 
-	return &cfg, nil
-}
-
-// FromEnv returns configuration based on ENV variables
-func FromEnv() (*Data, error) {
-	const op = "config.New"
-
-	var cfg Data
-
-	err := cleanenv.ReadEnv(&cfg)
+	err = cleanenv.ReadEnv(&cfg)
 	if err != nil {
 		return &Data{}, fmt.Errorf("%s: %w", op, err)
 	}
