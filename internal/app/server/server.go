@@ -1,13 +1,13 @@
 // Launch server
 
-package app
+package server
 
 import (
+	"github.com/RomanPlyazhnic/todolist/internal/app/server/rest"
 	"os"
 	"os/signal"
 	"syscall"
 
-	"github.com/RomanPlyazhnic/todolist/internal/app/rest"
 	"github.com/RomanPlyazhnic/todolist/internal/config"
 )
 
