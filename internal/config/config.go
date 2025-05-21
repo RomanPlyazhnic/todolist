@@ -20,29 +20,29 @@ type Data struct {
 }
 
 // FromPath returns configuration based on .yml file
-func FromPath(path string) *Data {
+func FromPath(path string) (*Data, error) {
 	const op = "config.New"
 
 	var cfg Data
 
 	err := cleanenv.ReadConfig(path, &cfg)
 	if err != nil {
-		panic(fmt.Errorf("%s: %w", op, err))
+		return &Data{}, fmt.Errorf("%s: %w", op, err)
 	}
 
-	return &cfg
+	return &cfg, nil
 }
 
 // FromEnv returns configuration based on ENV variables
-func FromEnv() *Data {
+func FromEnv() (*Data, error) {
 	const op = "config.New"
 
 	var cfg Data
 
 	err := cleanenv.ReadEnv(&cfg)
 	if err != nil {
-		panic(fmt.Errorf("%s: %w", op, err))
+		return &Data{}, fmt.Errorf("%s: %w", op, err)
 	}
 
-	return &cfg
+	return &cfg, nil
 }

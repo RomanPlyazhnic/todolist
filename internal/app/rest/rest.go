@@ -4,17 +4,16 @@ package rest
 
 import (
 	"context"
+	"github.com/RomanPlyazhnic/todolist/internal/config"
 	"github.com/go-chi/chi/v5"
 	"github.com/go-chi/chi/v5/middleware"
 	"github.com/go-chi/httplog/v2"
 	"log/slog"
 	"net/http"
 	"strconv"
-
-	"github.com/RomanPlyazhnic/todolist/internal/config"
 )
 
-// App represents main application object
+// App represents the main application object
 type App struct {
 	srv    *http.Server
 	router *chi.Mux
@@ -22,7 +21,7 @@ type App struct {
 	Logger *httplog.Logger
 }
 
-// New initializes and setup the application
+// New initializes and setups the application
 func New(cfg *config.Data) *App {
 	router := chi.NewRouter()
 

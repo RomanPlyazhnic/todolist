@@ -11,24 +11,24 @@ import (
 
 // Launch application
 func main() {
-	cfg := setupConfig()
+	cfg, err := setupConfig()
+	if err != nil {
+		panic(err)
+	}
 
 	app.Run(cfg)
 }
 
 // setupConfig takes .yml config if --config option is provided
 // Otherwise - configuration from ENV variables
-func setupConfig() *config.Data {
+func setupConfig() (*config.Data, error) {
 	var cfgPath string
 	flag.StringVar(&cfgPath, "config", "", "config path")
 	flag.Parse()
 
-	var cfg *config.Data
 	if cfgPath != "" {
-		cfg = config.FromPath(cfgPath)
-	} else {
-		cfg = config.FromEnv()
+		return config.FromPath(cfgPath)
 	}
 
-	return cfg
+	return config.FromEnv()
 }
