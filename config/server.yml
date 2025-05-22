@@ -4,5 +4,7 @@ port: 8000
 timeout: "10s"
 env: "dev"
 version: "v0.0.1"
+domain: "localhost"
 jwt:
+  enabled: true
   duration: "1h"

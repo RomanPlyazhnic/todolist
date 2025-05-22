@@ -16,10 +16,12 @@ type Data struct {
 	Timeout  time.Duration `yaml:"timeout" env:"TIMEOUT" env-default:"10s"`
 	Env      string        `yaml:"env" env:"ENV" env-default:"todolist"`
 	Version  string        `yaml:"version" env:"VERSION" env-default:"0.0.1"`
+	Domain   string        `yaml:"domain" env:"DOMAIN" env-default:"localhost"`
 	JWT      JWT           `yaml:"jwt"`
 }
 
 type JWT struct {
+	Enabled       bool          `yaml:"enabled" env:"JWT_ENABLED" env-default:"false"`
 	Secret        string        `env:"JWT_SECRET"`
 	TokenDuration time.Duration `yaml:"duration" env:"JWT_DURATION" env-default:"1h"`
 }

@@ -11,7 +11,7 @@ import (
 	"net/http"
 	"strconv"
 
-	"github.com/RomanPlyazhnic/todolist/internal/app/auth/jwt"
+	"github.com/RomanPlyazhnic/todolist/internal/app/server/rest/handlers"
 	"github.com/RomanPlyazhnic/todolist/internal/config"
 )
 
@@ -37,11 +37,6 @@ func New(cfg *config.Data) *App {
 		},
 	})
 
-	router.Use(middleware.RequestID)
-	router.Use(middleware.RealIP)
-	router.Use(httplog.RequestLogger(logger))
-	router.Use(middleware.Recoverer)
-
 	srv := &http.Server{
 		Addr:         ":" + strconv.Itoa(cfg.Port),
 		Handler:      router,
@@ -54,6 +49,14 @@ func New(cfg *config.Data) *App {
 		router: router,
 		config: cfg,
 		logger: logger,
+	}
+
+	router.Use(middleware.RequestID)
+	router.Use(middleware.RealIP)
+	router.Use(httplog.RequestLogger(logger))
+	router.Use(middleware.Recoverer)
+	if cfg.JWT.Enabled {
+		router.Use(JWTAuth(&app))
 	}
 
 	app.handleRoutes()
@@ -89,14 +92,7 @@ func (a *App) Logger() *httplog.Logger {
 
 // handleRoutes describes application's routes
 func (a *App) handleRoutes() {
-	a.router.Get("/", func(w http.ResponseWriter, r *http.Request) {
-		tkn, _ := jwt.CreateToken(a, "user1")
-		w.Write([]byte(tkn))
-		_, err := jwt.ValidateToken(a, tkn)
-		if err != nil {
-			w.Write([]byte("not successfully validated token"))
-			return
-		}
-		w.Write([]byte("successfully validated token"))
-	})
+	a.router.Get("/", handlers.Get(a))
+	a.router.Post("/Login", handlers.Login(a))
+	a.router.Post("/Register", handlers.Register(a))
 }
