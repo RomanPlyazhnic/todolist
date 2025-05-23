@@ -92,7 +92,7 @@ func (a *App) Logger() *httplog.Logger {
 
 // handleRoutes describes application's routes
 func (a *App) handleRoutes() {
-	a.router.Get("/", handlers.Get(a))
+	a.router.Get("/", handlers.Root(a))
 	a.router.Post("/Login", handlers.Login(a))
 	a.router.Post("/Register", handlers.Register(a))
 }

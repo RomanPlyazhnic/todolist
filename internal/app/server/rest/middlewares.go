@@ -4,8 +4,8 @@ import (
 	"errors"
 	"net/http"
 
-	"github.com/RomanPlyazhnic/todolist/internal/app/auth/jwt"
 	"github.com/RomanPlyazhnic/todolist/internal/app/server"
+	"github.com/RomanPlyazhnic/todolist/internal/core/auth"
 )
 
 func JWTAuth(srv server.Server) func(http.Handler) http.Handler {
@@ -35,9 +35,9 @@ func JWTAuth(srv server.Server) func(http.Handler) http.Handler {
 				return
 			}
 
-			_, err = jwt.ValidateToken(srv, c.Value)
+			_, err = auth.ValidateToken(srv, c.Value)
 			if err != nil {
-				if errors.Is(err, jwt.InvalidToken) {
+				if errors.Is(err, auth.InvalidToken) {
 					srv.Logger().Info("jwt token is invalid", op, err)
 					http.Error(w, "unauthorized", http.StatusUnauthorized)
 

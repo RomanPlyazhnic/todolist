@@ -7,9 +7,9 @@ import (
 	"github.com/RomanPlyazhnic/todolist/internal/app/server"
 )
 
-func Get(a server.Server) func(w http.ResponseWriter, r *http.Request) {
+func Root(a server.Server) func(w http.ResponseWriter, r *http.Request) {
 	return func(w http.ResponseWriter, r *http.Request) {
-		const op = "rest.Get"
+		const op = "rest.Root"
 
 		_, err := w.Write([]byte("Hello!"))
 		if err != nil {
