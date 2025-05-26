@@ -12,12 +12,15 @@ type LoginRequest struct {
 	Password string `json:"password" validate:"required"`
 }
 
-// ValidateResult represents fields and errors
+// LoginResult represents fields and errors
 type LoginResult struct {
 	Username string
 	Password string
 }
 
+// Validate checks if LoginRequest is valid
+// Returns LoginResult and error if it is not valid
+// LoginResult contains fields with errors
 func (l *LoginRequest) Validate() (validateResult LoginResult, err error) {
 	const op = "contracts.Login.Validate"
 

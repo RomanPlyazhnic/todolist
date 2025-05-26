@@ -12,11 +12,15 @@ type RegisterRequest struct {
 	Password string `json:"password" validate:"required,min=8"`
 }
 
+// RegisterResult represents fields and errors
 type RegisterResult struct {
 	Username string
 	Password string
 }
 
+// Validate checks if RegisterRequest is valid
+// Returns RegisterRequest and error if it is not valid
+// RegisterRequest contains fields with errors
 func (l *RegisterRequest) Validate() (validateResult RegisterResult, err error) {
 	const op = "contracts.Login.Validate"
 
