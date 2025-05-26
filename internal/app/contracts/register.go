@@ -1,3 +1,5 @@
+// Validate register request
+
 package contracts
 
 import (

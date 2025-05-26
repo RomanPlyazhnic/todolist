@@ -1,3 +1,4 @@
+// Validate login request
 package contracts
 
 import (

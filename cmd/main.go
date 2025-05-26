@@ -16,7 +16,8 @@ func main() {
 		panic(err)
 	}
 
-	app.Run(cfg)
+	a := app.Build(cfg)
+	a.Run()
 }
 
 // setupConfig takes .yml config if --config option is provided

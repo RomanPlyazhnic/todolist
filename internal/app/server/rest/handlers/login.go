@@ -15,7 +15,7 @@ import (
 // Login returns http handler
 // Accepts JSON LoginRequest body
 // Checks if login and password are correct and returns JWT token in the header
-func Login(a server.Server) func(w http.ResponseWriter, r *http.Request) {
+func Login(a *server.App) func(w http.ResponseWriter, r *http.Request) {
 	return func(w http.ResponseWriter, r *http.Request) {
 		const op = "rest.Login"
 
@@ -27,7 +27,7 @@ func Login(a server.Server) func(w http.ResponseWriter, r *http.Request) {
 		err := dec.Decode(&loginRequest)
 		if err != nil {
 			err = fmt.Errorf("%s: %w", op, err)
-			a.Logger().Info("failed to decode loginRequest", op, err)
+			a.Logger.Info("failed to decode loginRequest", op, err)
 			http.Error(w, "invalid request", http.StatusBadRequest)
 
 			return
@@ -36,13 +36,13 @@ func Login(a server.Server) func(w http.ResponseWriter, r *http.Request) {
 		validateResult, err := loginRequest.Validate()
 		if err != nil {
 			err = fmt.Errorf("%s: %w", op, err)
-			a.Logger().Info("failed to validate loginRequest", op, err)
+			a.Logger.Info("failed to validate loginRequest", op, err)
 			http.Error(w, "invalid request", http.StatusBadRequest)
 
 			enc := json.NewEncoder(w)
 			err = enc.Encode(validateResult)
 			if err != nil {
-				a.Logger().Info("failed to write response", r.Method, fmt.Errorf("%s: %w", op, err))
+				a.Logger.Info("failed to write response", r.Method, fmt.Errorf("%s: %w", op, err))
 			}
 
 			return
@@ -51,7 +51,7 @@ func Login(a server.Server) func(w http.ResponseWriter, r *http.Request) {
 		jwtToken, err := auth.Login(a, loginRequest.Username, loginRequest.Password)
 		if err != nil {
 			err = fmt.Errorf("%s: %w", op, err)
-			a.Logger().Info("failed to login", op, err)
+			a.Logger.Info("failed to login", op, err)
 			http.Error(w, "failed to login", http.StatusBadRequest)
 
 			return
@@ -61,14 +61,14 @@ func Login(a server.Server) func(w http.ResponseWriter, r *http.Request) {
 			Name:     "jwt",
 			Value:    jwtToken,
 			HttpOnly: true,
-			Domain:   a.Config().Domain,
+			Domain:   a.Config.Domain,
 			SameSite: http.SameSiteDefaultMode,
 		})
 
-		a.Logger().Info("login successful", op, true)
+		a.Logger.Info("login successful", op, true)
 		_, err = w.Write([]byte("Login successfully"))
 		if err != nil {
-			a.Logger().Info("failed to write response", r.Method, fmt.Errorf("%s: %w", op, err))
+			a.Logger.Info("failed to write response", r.Method, fmt.Errorf("%s: %w", op, err))
 		}
 	}
 }

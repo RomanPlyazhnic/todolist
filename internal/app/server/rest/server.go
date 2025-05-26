@@ -7,92 +7,70 @@ import (
 	"github.com/go-chi/chi/v5"
 	"github.com/go-chi/chi/v5/middleware"
 	"github.com/go-chi/httplog/v2"
-	"log/slog"
 	"net/http"
 	"strconv"
 
+	"github.com/RomanPlyazhnic/todolist/internal/app/server"
 	"github.com/RomanPlyazhnic/todolist/internal/app/server/rest/handlers"
 	"github.com/RomanPlyazhnic/todolist/internal/config"
 )
 
-// App represents the main application object
-type App struct {
+// Server represents the main application object
+type RestServer struct {
 	srv    *http.Server
 	router *chi.Mux
-	config *config.Data
-	logger *httplog.Logger
 }
 
 // New initializes and setups the application
-func New(cfg *config.Data) *App {
+func New(app *server.App, cfg *config.Data) *RestServer {
 	router := chi.NewRouter()
 
-	logger := httplog.NewLogger(cfg.Name, httplog.Options{
-		LogLevel:       slog.LevelDebug,
-		Concise:        true,
-		RequestHeaders: true,
-		Tags: map[string]string{
-			"version": cfg.Version,
-			"env":     cfg.Env,
-		},
-	})
-
-	srv := &http.Server{
+	httpSrv := &http.Server{
 		Addr:         ":" + strconv.Itoa(cfg.Port),
 		Handler:      router,
 		ReadTimeout:  cfg.Timeout,
 		WriteTimeout: cfg.Timeout,
 	}
 
-	app := App{
-		srv:    srv,
+	srv := RestServer{
+		srv:    httpSrv,
 		router: router,
-		config: cfg,
-		logger: logger,
 	}
 
 	router.Use(middleware.RequestID)
 	router.Use(middleware.RealIP)
-	router.Use(httplog.RequestLogger(logger))
+	router.Use(httplog.RequestLogger(app.Logger))
 	router.Use(middleware.Recoverer)
 	if cfg.JWT.Enabled {
-		router.Use(JWTAuth(&app))
+		router.Use(JWTAuth(app))
 	}
 
-	app.handleRoutes()
+	srv.handleRoutes(app)
 
-	return &app
+	return &srv
 }
 
 // Start launches the server
-func (a *App) Start() {
+func (s *RestServer) Start(app *server.App) {
 	const op = "app.stop"
 
-	a.logger.Info("starting server")
-	a.logger.Info("app closed", op, a.srv.ListenAndServe())
+	app.Logger.Info("starting server")
+	app.Logger.Info("app closed", op, s.srv.ListenAndServe())
 }
 
 // Shutdown stops the server
-func (a *App) Shutdown() {
+func (s *RestServer) Shutdown(app *server.App) {
 	const op = "app.shutdown"
 
-	a.logger.Info("shutting down...", op, true)
-	if err := a.srv.Shutdown(context.Background()); err != nil {
-		a.logger.Error("%s: %v", op, err)
+	app.Logger.Info("shutting down...", op, true)
+	if err := s.srv.Shutdown(context.Background()); err != nil {
+		app.Logger.Error("%s: %v", op, err)
 	}
 }
 
-func (a *App) Config() *config.Data {
-	return a.config
-}
-
-func (a *App) Logger() *httplog.Logger {
-	return a.logger
-}
-
 // handleRoutes describes application's routes
-func (a *App) handleRoutes() {
-	a.router.Get("/", handlers.Root(a))
-	a.router.Post("/Login", handlers.Login(a))
-	a.router.Post("/Register", handlers.Register(a))
+func (s *RestServer) handleRoutes(app *server.App) {
+	s.router.Get("/", handlers.Root(app))
+	s.router.Post("/Login", handlers.Login(app))
+	s.router.Post("/Register", handlers.Register(app))
 }
