@@ -21,7 +21,7 @@ func Build(cfg *config.Data) *server.App {
 	app.SetConfig(cfg)
 	buildLogger(&app, cfg)
 	buildServer(&app, cfg)
-	buildDatabase(&app, cfg)
+	buildDatabase(&app)
 
 	return &app
 }
@@ -57,8 +57,7 @@ func buildServer(app *server.App, cfg *config.Data) {
 }
 
 // buildDatabase builds the database
-// cfg - application configuration
 // app - application object
-func buildDatabase(app *server.App, cfg *config.Data) {
+func buildDatabase(app *server.App) {
 	app.SetDB(database.NewSqliteDB())
 }
