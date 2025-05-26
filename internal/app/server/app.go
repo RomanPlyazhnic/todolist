@@ -16,7 +16,7 @@ type App struct {
 	srv    Server
 	Config *config.Data
 	Logger *httplog.Logger
-	//DB     *database.Database
+	DB     DB
 }
 
 // Server represents the server interface
@@ -25,17 +25,33 @@ type Server interface {
 	Shutdown(*App)
 }
 
+type DB interface {
+	Start(*App) error
+	Stop(*App) error
+}
+
 // Run launches the server
 // Stops when Ctrl+C is pressed
 func (a *App) Run() {
+	const op = "app.run"
+
 	done := make(chan os.Signal, 1)
 	signal.Notify(done, os.Interrupt, syscall.SIGINT, syscall.SIGTERM)
 
 	go func() {
+		err := a.DB.Start(a)
+		if err != nil {
+			a.Logger.Error("failed to start database", op, err)
+			panic(err)
+		}
 		a.srv.Start(a)
 	}()
 
 	<-done
+	err := a.DB.Stop(a)
+	if err != nil {
+		a.Logger.Error("failed to stop database", op, err)
+	}
 	a.srv.Shutdown(a)
 }
 
@@ -49,4 +65,8 @@ func (a *App) SetConfig(config *config.Data) {
 
 func (a *App) SetLogger(logger *httplog.Logger) {
 	a.Logger = logger
+}
+
+func (a *App) SetDB(db DB) {
+	a.DB = db
 }

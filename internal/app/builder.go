@@ -3,6 +3,7 @@
 package app
 
 import (
+	"github.com/RomanPlyazhnic/todolist/internal/app/database"
 	"github.com/go-chi/httplog/v2"
 	"log/slog"
 
@@ -20,6 +21,7 @@ func Build(cfg *config.Data) *server.App {
 	app.SetConfig(cfg)
 	buildLogger(&app, cfg)
 	buildServer(&app, cfg)
+	buildDatabase(&app, cfg)
 
 	return &app
 }
@@ -41,10 +43,6 @@ func buildLogger(app *server.App, cfg *config.Data) {
 	app.SetLogger(logger)
 }
 
-func buildDatabase() {
-	// TODO: implement database
-}
-
 // buildServer builds the server
 // cfg - application configuration
 // app - application object
@@ -56,4 +54,11 @@ func buildServer(app *server.App, cfg *config.Data) {
 	default:
 		app.SetServer(rest.New(app, cfg))
 	}
+}
+
+// buildDatabase builds the database
+// cfg - application configuration
+// app - application object
+func buildDatabase(app *server.App, cfg *config.Data) {
+	app.SetDB(database.NewSqliteDB())
 }

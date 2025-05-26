@@ -56,6 +56,8 @@ func (s *RestServer) Start(app *server.App) {
 
 	app.Logger.Info("starting server")
 	app.Logger.Info("app closed", op, s.srv.ListenAndServe())
+
+	// TODO: handle error
 }
 
 // Shutdown stops the server
@@ -66,6 +68,8 @@ func (s *RestServer) Shutdown(app *server.App) {
 	if err := s.srv.Shutdown(context.Background()); err != nil {
 		app.Logger.Error("%s: %v", op, err)
 	}
+
+	// TODO: handle error
 }
 
 // handleRoutes describes application's routes

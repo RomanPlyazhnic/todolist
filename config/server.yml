@@ -5,6 +5,8 @@ timeout: "10s"
 env: "dev"
 version: "v0.0.1"
 domain: "localhost"
+database:
+  path: "./database/test.db"
 jwt:
   enabled: true
   duration: "1h"

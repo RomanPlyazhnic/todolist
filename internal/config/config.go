@@ -17,7 +17,12 @@ type Data struct {
 	Env      string        `yaml:"env" env:"ENV" env-default:"todolist"`
 	Version  string        `yaml:"version" env:"VERSION" env-default:"0.0.1"`
 	Domain   string        `yaml:"domain" env:"DOMAIN" env-default:"localhost"`
+	Database Database      `yaml:"database"`
 	JWT      JWT           `yaml:"jwt"`
+}
+
+type Database struct {
+	Path string `yaml:"path" env:"DATABASE_PATH" env-default:"./test.db"`
 }
 
 type JWT struct {
