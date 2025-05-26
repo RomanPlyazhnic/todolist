@@ -4,3 +4,6 @@ tasks:
   server:
     cmds:
       - JWT_SECRET=12345678 go run ./cmd/main.go --config=./config/server.yml
+  migrate:
+    cmds:
+      - go run ./database/migrate.go --config=./config/server.yml

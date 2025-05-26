@@ -3,6 +3,7 @@
 package server
 
 import (
+	"database/sql"
 	"github.com/go-chi/httplog/v2"
 	"os"
 	"os/signal"
@@ -28,6 +29,7 @@ type Server interface {
 type DB interface {
 	Start(*App) error
 	Stop(*App) error
+	Exec(query string, args ...interface{}) (sql.Result, error)
 }
 
 // Run launches the server
@@ -47,12 +49,15 @@ func (a *App) Run() {
 		a.srv.Start(a)
 	}()
 
+	defer func() {
+		err := a.DB.Stop(a)
+		if err != nil {
+			a.Logger.Error("failed to stop database", op, err)
+		}
+		a.srv.Shutdown(a)
+	}()
+
 	<-done
-	err := a.DB.Stop(a)
-	if err != nil {
-		a.Logger.Error("failed to stop database", op, err)
-	}
-	a.srv.Shutdown(a)
 }
 
 func (a *App) SetServer(srv Server) {
