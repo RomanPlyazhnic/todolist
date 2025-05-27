@@ -1,3 +1,5 @@
+// Migrate database
+
 package main
 
 import (
@@ -12,6 +14,7 @@ import (
 	"github.com/RomanPlyazhnic/todolist/internal/config"
 )
 
+// Run newest migrations
 func main() {
 	const op = "database.migrate"
 

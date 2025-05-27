@@ -63,3 +63,8 @@ func (db *SqliteDB) Stop(a *server.App) error {
 func (db *SqliteDB) Exec(query string, args ...interface{}) (sql.Result, error) {
 	return db.db.Exec(query, args...)
 }
+
+// Exequte a query with rows result
+func (db *SqliteDB) Query(query string, args ...interface{}) (*sql.Rows, error) {
+	return db.db.Query(query, args...)
+}
