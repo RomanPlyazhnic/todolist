@@ -65,6 +65,12 @@ func (db *SqliteDB) Exec(query string, args ...interface{}) (sql.Result, error) 
 }
 
 // Exequte a query with rows result
+// NOTE: don't forget to Close() returned rows
 func (db *SqliteDB) Query(query string, args ...interface{}) (*sql.Rows, error) {
 	return db.db.Query(query, args...)
+}
+
+// Execute a query with 1 row result
+func (db *SqliteDB) QueryRow(query string, args ...interface{}) *sql.Row {
+	return db.db.QueryRow(query, args...)
 }

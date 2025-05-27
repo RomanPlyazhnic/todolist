@@ -3,12 +3,11 @@
 package auth
 
 import (
-	"errors"
+	"fmt"
+	"github.com/RomanPlyazhnic/todolist/internal/core/domains"
 
 	"github.com/RomanPlyazhnic/todolist/internal/app/server"
 )
-
-var ErrFailedRegister = errors.New("Failed to register user")
 
 // Register checks if user credentials for a new user are valid and user is unique
 // If credentials are valid - returns nil
@@ -16,10 +15,11 @@ var ErrFailedRegister = errors.New("Failed to register user")
 func Register(a *server.App, username, password string) error {
 	const op = "auth.Register"
 
-	if username != "admin" || password != "adminjjjj" {
-		a.Logger.Info("failed to register user", op, ErrFailedRegister)
+	err := domains.CreateUser(a, username, password)
+	if err != nil {
+		a.Logger.Info("failed to register user", op, err)
 
-		return ErrFailedRegister
+		return fmt.Errorf("failed to register user", op, err)
 	}
 
 	a.Logger.Info("register successful", op, true)

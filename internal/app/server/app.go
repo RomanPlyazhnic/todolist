@@ -31,6 +31,7 @@ type DB interface {
 	Stop(*App) error
 	Exec(query string, args ...interface{}) (sql.Result, error)
 	Query(query string, args ...interface{}) (*sql.Rows, error)
+	QueryRow(query string, args ...interface{}) *sql.Row
 }
 
 // Run launches the server
