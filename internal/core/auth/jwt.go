@@ -45,21 +45,32 @@ func CreateToken(a *server.App, username string) (tokenString string, err error)
 
 // ValidateToken validates JWT token and returns token
 // If token is not valid - returns error
-func ValidateToken(a *server.App, tokenString string) (token *jwt.Token, err error) {
+func ValidateToken(a *server.App, tokenString string) (tokenClaim *MyCustomClaims, err error) {
 	const op = "jwt.ValidateToken"
 
-	token, err = jwt.Parse(tokenString, func(token *jwt.Token) (interface{}, error) {
+	token, err := jwt.ParseWithClaims(tokenString, &MyCustomClaims{}, func(token *jwt.Token) (interface{}, error) {
 		return []byte(a.Config.JWT.Secret), nil
 	}, jwt.WithValidMethods([]string{jwt.SigningMethodHS256.Alg()}))
+	//token, err = jwt.Parse(tokenString, func(token *jwt.Token) (interface{}, error) {
+	//	return []byte(a.Config.JWT.Secret), nil
+	//}, jwt.WithValidMethods([]string{jwt.SigningMethodHS256.Alg()}))
 	if err != nil {
 		err = fmt.Errorf("%s: %w", op, err)
 		a.Logger.Info("failed to validate token", op, err)
 	}
 
-	if !token.Valid {
+	claims, ok := token.Claims.(*MyCustomClaims)
+	if !ok {
 		a.Logger.Info("failed to validate token", op, err)
-		return token, fmt.Errorf("%s: %w", op, InvalidToken)
+
+		return nil, fmt.Errorf("%s: %w", op, InvalidToken)
 	}
 
-	return token, err
+	if !token.Valid {
+		a.Logger.Info("failed to validate token", op, err)
+
+		return claims, fmt.Errorf("%s: %w", op, InvalidToken)
+	}
+
+	return claims, err
 }

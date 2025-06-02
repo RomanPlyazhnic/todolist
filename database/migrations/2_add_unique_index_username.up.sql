@@ -1,1 +1,0 @@
-CREATE UNIQUE INDEX IF NOT EXISTS UsersUsernameUniqueIndex ON users (username);

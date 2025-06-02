@@ -44,7 +44,8 @@ func JWTAuth(a *server.App) func(http.Handler) http.Handler {
 				return
 			}
 
-			_, err = auth.ValidateToken(a, c.Value)
+			claim, err := auth.ValidateToken(a, c.Value)
+
 			if err != nil {
 				if errors.Is(err, auth.InvalidToken) {
 					a.Logger.Info("jwt token is invalid", op, err)
@@ -58,6 +59,9 @@ func JWTAuth(a *server.App) func(http.Handler) http.Handler {
 
 				return
 			}
+
+			// TODO: add user to ctx
+			a.Logger.Info("logged in user: "+claim.Username, op, true)
 
 			next.ServeHTTP(w, r)
 		}
