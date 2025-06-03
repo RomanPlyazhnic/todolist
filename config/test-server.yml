@@ -1,12 +1,12 @@
-name: "todolist1"
+name: "test-todolist"
 protocol: "rest"
-port: 8000
+port: 8001
 timeout: "10s"
-env: "dev"
+env: "test"
 version: "v0.0.1"
 domain: "localhost"
 database:
-  path: "./database/main.db"
+  path: "./database/test.db"
 jwt:
   enabled: true
   duration: "1h"

@@ -7,3 +7,6 @@ tasks:
   migrate:
     cmds:
       - go run ./cmd/migrate/main.go --config=./config/server.yml
+  test-migrate:
+    cmds:
+      - go run ./cmd/migrate/main.go --config=./config/test-server.yml
