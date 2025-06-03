@@ -46,7 +46,7 @@ func Register(a *server.App) func(w http.ResponseWriter, r *http.Request) {
 			return
 		}
 
-		err = auth.Register(a, registerRequest)
+		err = auth.Register(r.Context(), a, registerRequest)
 		if err != nil {
 			err = fmt.Errorf("%s: %w", op, err)
 			a.Logger.Info("failed to register", op, err)

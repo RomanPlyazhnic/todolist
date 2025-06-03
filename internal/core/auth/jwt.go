@@ -15,16 +15,16 @@ var InvalidToken = errors.New("invalid token")
 
 // MyCustomClaims represents JWT token format
 type MyCustomClaims struct {
-	Username string `json:"username"`
+	UserId int `json:"user_id"`
 	jwt.RegisteredClaims
 }
 
 // CreateToken generates JWT token based on user
-func CreateToken(a *server.App, username string) (tokenString string, err error) {
+func CreateToken(a *server.App, userId int) (tokenString string, err error) {
 	const op = "jwt.CreateToken"
 
 	claims := MyCustomClaims{
-		username,
+		userId,
 		jwt.RegisteredClaims{
 			ExpiresAt: jwt.NewNumericDate(time.Now().Add(a.Config.JWT.TokenDuration)),
 			IssuedAt:  jwt.NewNumericDate(time.Now()),

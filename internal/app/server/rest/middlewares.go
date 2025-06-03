@@ -3,6 +3,7 @@
 package rest
 
 import (
+	"context"
 	"errors"
 	"net/http"
 
@@ -45,7 +46,6 @@ func JWTAuth(a *server.App) func(http.Handler) http.Handler {
 			}
 
 			claim, err := auth.ValidateToken(a, c.Value)
-
 			if err != nil {
 				if errors.Is(err, auth.InvalidToken) {
 					a.Logger.Info("jwt token is invalid", op, err)
@@ -60,10 +60,9 @@ func JWTAuth(a *server.App) func(http.Handler) http.Handler {
 				return
 			}
 
-			// TODO: add user to ctx
-			a.Logger.Info("logged in user: "+claim.Username, op, true)
+			ctx := context.WithValue(r.Context(), "user_id", claim.UserId)
 
-			next.ServeHTTP(w, r)
+			next.ServeHTTP(w, r.WithContext(ctx))
 		}
 
 		return http.HandlerFunc(fn)
