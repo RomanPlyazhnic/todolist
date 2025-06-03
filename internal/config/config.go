@@ -5,6 +5,8 @@ package config
 import (
 	"fmt"
 	"github.com/ilyakaznacheev/cleanenv"
+	"path/filepath"
+	"runtime"
 	"time"
 )
 
@@ -17,8 +19,9 @@ type Data struct {
 	Env      string        `yaml:"env" env:"ENV" env-default:"todolist"`
 	Version  string        `yaml:"version" env:"VERSION" env-default:"0.0.1"`
 	Domain   string        `yaml:"domain" env:"DOMAIN" env-default:"localhost"`
-	Database Database      `yaml:"database"`
-	JWT      JWT           `yaml:"jwt"`
+	RootPath string
+	Database Database `yaml:"database"`
+	JWT      JWT      `yaml:"jwt"`
 }
 
 type Database struct {
@@ -40,8 +43,11 @@ func FromPath(path string) (*Data, error) {
 	var cfg Data
 	var err error
 
+	_, curPath, _, _ := runtime.Caller(0)
+	rootPath := filepath.Join(curPath, "..", "..", "..")
+
 	if path != "" {
-		err = cleanenv.ReadConfig(path, &cfg)
+		err = cleanenv.ReadConfig(filepath.Join(rootPath, path), &cfg)
 		if err != nil {
 			return &Data{}, fmt.Errorf("%s: %w", op, err)
 		}
@@ -51,6 +57,8 @@ func FromPath(path string) (*Data, error) {
 	if err != nil {
 		return &Data{}, fmt.Errorf("%s: %w", op, err)
 	}
+
+	cfg.RootPath = filepath.Join(curPath, "./../../../")
 
 	return &cfg, nil
 }

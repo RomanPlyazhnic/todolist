@@ -9,6 +9,7 @@ import (
 	"github.com/golang-migrate/migrate/v4/database/sqlite3"
 	_ "github.com/golang-migrate/migrate/v4/source/file"
 	_ "github.com/mattn/go-sqlite3"
+	"path/filepath"
 
 	"github.com/RomanPlyazhnic/todolist/internal/app"
 	"github.com/RomanPlyazhnic/todolist/internal/config"
@@ -24,7 +25,7 @@ func main() {
 	}
 
 	a := app.Build(cfg)
-	db, err := sql.Open("sqlite3", a.Config.Database.Path)
+	db, err := sql.Open("sqlite3", filepath.Join(a.Config.RootPath, a.Config.Database.Path))
 	if err != nil {
 		a.Logger.Error("failed to open database", op, err)
 		panic(err)

@@ -15,6 +15,7 @@ import (
 // App represents the main application object
 type App struct {
 	srv    Server
+	done   chan os.Signal
 	Config *config.Data
 	Logger *httplog.Logger
 	DB     DB
@@ -39,8 +40,8 @@ type DB interface {
 func (a *App) Run() {
 	const op = "app.run"
 
-	done := make(chan os.Signal, 1)
-	signal.Notify(done, os.Interrupt, syscall.SIGINT, syscall.SIGTERM)
+	a.done = make(chan os.Signal, 1)
+	signal.Notify(a.done, os.Interrupt, syscall.SIGINT, syscall.SIGTERM)
 
 	go func() {
 		err := a.DB.Start(a)
@@ -59,7 +60,15 @@ func (a *App) Run() {
 		a.srv.Shutdown(a)
 	}()
 
-	<-done
+	<-a.done
+}
+
+func (a *App) Shutdown() {
+	const op = "app.shutdown"
+
+	a.Logger.Info("shutting down", op, true)
+
+	a.done <- os.Interrupt
 }
 
 func (a *App) SetServer(srv Server) {

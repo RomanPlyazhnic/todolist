@@ -12,6 +12,7 @@ import (
 	"database/sql"
 	"fmt"
 	_ "github.com/mattn/go-sqlite3"
+	"path/filepath"
 
 	"github.com/RomanPlyazhnic/todolist/internal/app/server"
 )
@@ -32,7 +33,10 @@ func (db *SqliteDB) Start(a *server.App) error {
 	const op = "database.Setup"
 
 	a.Logger.Info("starting database", op, true)
-	database, err := sql.Open("sqlite3", a.Config.Database.Path)
+
+	dbPath := filepath.Join(a.Config.RootPath, a.Config.Database.Path)
+
+	database, err := sql.Open("sqlite3", dbPath)
 	if err != nil {
 		a.Logger.Error("failed to launch database", op, err)
 		return fmt.Errorf("failed to launch database", op, err)

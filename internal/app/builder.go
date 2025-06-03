@@ -3,10 +3,10 @@
 package app
 
 import (
-	"github.com/RomanPlyazhnic/todolist/internal/app/database"
 	"github.com/go-chi/httplog/v2"
 	"log/slog"
 
+	"github.com/RomanPlyazhnic/todolist/internal/app/database"
 	"github.com/RomanPlyazhnic/todolist/internal/app/server"
 	"github.com/RomanPlyazhnic/todolist/internal/app/server/rest"
 	"github.com/RomanPlyazhnic/todolist/internal/config"
