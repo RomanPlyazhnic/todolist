@@ -4,10 +4,12 @@ package main
 
 import (
 	"database/sql"
+	"flag"
 	"github.com/golang-migrate/migrate/v4"
 	"github.com/golang-migrate/migrate/v4/database/sqlite3"
 	_ "github.com/golang-migrate/migrate/v4/source/file"
 	_ "github.com/mattn/go-sqlite3"
+	"os"
 	"path/filepath"
 
 	"github.com/RomanPlyazhnic/todolist/internal/app"
@@ -18,7 +20,7 @@ import (
 func main() {
 	const op = "database.migrate"
 
-	cfg, err := config.Get()
+	cfg, err := config.Get(configPath())
 	if err != nil {
 		panic(err)
 	}
@@ -54,4 +56,16 @@ func main() {
 	}
 
 	a.Logger.Info("database migrated", op, true)
+}
+
+func configPath() string {
+	var path string
+	path = os.Getenv("CONFIG_PATH")
+
+	if path == "" {
+		flag.StringVar(&path, "config", "", "config path")
+		flag.Parse()
+	}
+
+	return path
 }

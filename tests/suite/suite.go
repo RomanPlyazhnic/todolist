@@ -2,9 +2,12 @@ package suite
 
 import (
 	"context"
+	"flag"
 	"fmt"
 	_ "github.com/mattn/go-sqlite3"
 	"net/http"
+	"os"
+	"path/filepath"
 	"testing"
 	"time"
 
@@ -23,7 +26,7 @@ func New(t *testing.T) *Suite {
 	t.Helper()
 	t.Parallel()
 
-	cfg, err := config.Get()
+	cfg, err := config.Get(configPath())
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -72,4 +75,20 @@ func waitServerStarted(a *server.App) {
 
 		time.Sleep(100 * time.Millisecond)
 	}
+}
+
+func configPath() string {
+	var path string
+	path = os.Getenv("CONFIG_PATH")
+
+	if path == "" {
+		flag.StringVar(&path, "config", "", "config path")
+		flag.Parse()
+	}
+
+	if path == "" {
+		path = filepath.Join("config", "test-server.yml")
+	}
+
+	return path
 }

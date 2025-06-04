@@ -55,9 +55,12 @@ func (s *RestServer) Start(app *server.App) {
 	const op = "app.stop"
 
 	app.Logger.Info("starting server")
+	err := s.srv.ListenAndServe()
+	if err != http.ErrServerClosed {
+		app.Logger.Error("%s: %v", op, err)
+		panic(err)
+	}
 	app.Logger.Info("app closed", op, s.srv.ListenAndServe())
-
-	// TODO: handle error
 }
 
 // Shutdown stops the server
@@ -68,14 +71,12 @@ func (s *RestServer) Shutdown(app *server.App) {
 	if err := s.srv.Shutdown(context.Background()); err != nil {
 		app.Logger.Error("%s: %v", op, err)
 	}
-
-	// TODO: handle error
 }
 
 // handleRoutes describes application's routes
 func (s *RestServer) handleRoutes(app *server.App) {
 	s.router.Get("/Health", handlers.Health(app))
-	s.router.Get("/Root", handlers.Root(app))
+	s.router.Get("/", handlers.Root(app))
 	s.router.Post("/Login", handlers.Login(app))
 	s.router.Post("/Register", handlers.Register(app))
 }

@@ -3,10 +3,8 @@
 package config
 
 import (
-	"flag"
 	"fmt"
 	"github.com/ilyakaznacheev/cleanenv"
-	"os"
 	"path/filepath"
 	"runtime"
 	"time"
@@ -41,19 +39,11 @@ type JWT struct {
 // If a config path presents - read .yml config and override it with ENV variables
 // Config path can be provided via --config=PATH or ENV variable CONFIG_PATH
 // If a config path not presents - read config from ENV variables
-func Get() (*Data, error) {
+func Get(path string) (*Data, error) {
 	const op = "config.New"
 
 	var cfg Data
 	var err error
-
-	var path string
-	path = os.Getenv("CONFIG_PATH")
-
-	if path == "" {
-		flag.StringVar(&path, "config", "", "config path")
-		flag.Parse()
-	}
 
 	_, curPath, _, _ := runtime.Caller(0)
 	rootPath := filepath.Join(curPath, "..", "..", "..")
@@ -70,7 +60,7 @@ func Get() (*Data, error) {
 		return &Data{}, fmt.Errorf("%s: %w", op, err)
 	}
 
-	cfg.RootPath = filepath.Join(curPath, "./../../../")
+	cfg.RootPath = rootPath
 
 	return &cfg, nil
 }
