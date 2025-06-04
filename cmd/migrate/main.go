@@ -4,7 +4,6 @@ package main
 
 import (
 	"database/sql"
-	"flag"
 	"github.com/golang-migrate/migrate/v4"
 	"github.com/golang-migrate/migrate/v4/database/sqlite3"
 	_ "github.com/golang-migrate/migrate/v4/source/file"
@@ -19,7 +18,7 @@ import (
 func main() {
 	const op = "database.migrate"
 
-	cfg, err := setupConfig()
+	cfg, err := config.Get()
 	if err != nil {
 		panic(err)
 	}
@@ -55,14 +54,4 @@ func main() {
 	}
 
 	a.Logger.Info("database migrated", op, true)
-}
-
-// setupConfig takes .yml config if --config option is provided
-// Otherwise - configuration from ENV variables
-func setupConfig() (*config.Data, error) {
-	var cfgPath string
-	flag.StringVar(&cfgPath, "config", "", "config path")
-	flag.Parse()
-
-	return config.FromPath(cfgPath)
 }

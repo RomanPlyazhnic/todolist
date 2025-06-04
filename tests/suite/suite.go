@@ -5,7 +5,6 @@ import (
 	"fmt"
 	_ "github.com/mattn/go-sqlite3"
 	"net/http"
-	"path/filepath"
 	"testing"
 	"time"
 
@@ -24,7 +23,7 @@ func New(t *testing.T) *Suite {
 	t.Helper()
 	t.Parallel()
 
-	cfg, err := setupConfig()
+	cfg, err := config.Get()
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -51,15 +50,6 @@ func New(t *testing.T) *Suite {
 		App: a,
 		Ctx: ctx,
 	}
-}
-
-// setupConfig takes .yml config if --config option is provided
-// Otherwise - configuration from ENV variables
-func setupConfig() (*config.Data, error) {
-	// TODO: implement config path
-	path := filepath.Join("config", "test-server.yml")
-
-	return config.FromPath(path)
 }
 
 func waitServerStarted(a *server.App) {
