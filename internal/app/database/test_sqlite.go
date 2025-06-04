@@ -1,16 +1,9 @@
-// SQLite database implementation
-//
-// Example:
-// 	db := SqliteDB{}
-// 	db.Start(app)
-// 	defer db.Stop(app)
-// 	res, err := db.Exec("create table foo (id integer not null primary key, name text);")
-
 package database
 
 import (
 	"database/sql"
 	"fmt"
+	"github.com/DATA-DOG/go-txdb"
 	_ "github.com/mattn/go-sqlite3"
 	"path/filepath"
 
@@ -18,29 +11,24 @@ import (
 )
 
 // SqliteDB represents Sqlite database client
-type SqliteDB struct {
+type TestSqliteDB struct {
 	db *sql.DB
 }
 
 // Initialize database
-func NewSqliteDB() *SqliteDB {
-	return new(SqliteDB)
+func NewTestSqliteDB() *TestSqliteDB {
+	return new(TestSqliteDB)
 }
 
 // Start opens database
 // Returns error if not opened
-func (db *SqliteDB) Start(a *server.App) error {
+func (db *TestSqliteDB) Start(a *server.App) error {
 	const op = "database.Setup"
 
 	a.Logger.Info("starting database", op, true)
 
 	dbPath := filepath.Join(a.Config.RootPath, a.Config.Database.Path)
-
-	database, err := sql.Open("sqlite3", dbPath)
-	if err != nil {
-		a.Logger.Error("failed to launch database", op, err)
-		return fmt.Errorf("failed to launch database", op, err)
-	}
+	database := sql.OpenDB(txdb.New("sqlite3", dbPath))
 	a.Logger.Info("database started", op, true)
 
 	db.db = database
@@ -49,7 +37,7 @@ func (db *SqliteDB) Start(a *server.App) error {
 }
 
 // Stop closes a database and prevents new queries to start
-func (db *SqliteDB) Stop(a *server.App) error {
+func (db *TestSqliteDB) Stop(a *server.App) error {
 	const op = "database.Close"
 
 	a.Logger.Info("closing database", op, true)
@@ -64,22 +52,22 @@ func (db *SqliteDB) Stop(a *server.App) error {
 }
 
 // Exec executes a query
-func (db *SqliteDB) Exec(query string, args ...interface{}) (sql.Result, error) {
+func (db *TestSqliteDB) Exec(query string, args ...interface{}) (sql.Result, error) {
 	return db.db.Exec(query, args...)
 }
 
 // Exequte a query with rows result
 // NOTE: don't forget to Close() returned rows
-func (db *SqliteDB) Query(query string, args ...interface{}) (*sql.Rows, error) {
+func (db *TestSqliteDB) Query(query string, args ...interface{}) (*sql.Rows, error) {
 	return db.db.Query(query, args...)
 }
 
 // Execute a query with 1 row result
-func (db *SqliteDB) QueryRow(query string, args ...interface{}) *sql.Row {
+func (db *TestSqliteDB) QueryRow(query string, args ...interface{}) *sql.Row {
 	return db.db.QueryRow(query, args...)
 }
 
 // Begin starts a transaction
-func (db *SqliteDB) Begin() (*sql.Tx, error) {
+func (db *TestSqliteDB) Begin() (*sql.Tx, error) {
 	return db.db.Begin()
 }

@@ -25,6 +25,7 @@ type Data struct {
 }
 
 type Database struct {
+	Test bool   `yaml:"test" env:"DATABASE_TEST" env-default:"false"`
 	Path string `yaml:"path" env:"DATABASE_PATH" env-default:"./test.db"`
 }
 

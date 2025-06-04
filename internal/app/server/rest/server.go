@@ -74,7 +74,8 @@ func (s *RestServer) Shutdown(app *server.App) {
 
 // handleRoutes describes application's routes
 func (s *RestServer) handleRoutes(app *server.App) {
-	s.router.Get("/", handlers.Root(app))
+	s.router.Get("/Health", handlers.Health(app))
+	s.router.Get("/Root", handlers.Root(app))
 	s.router.Post("/Login", handlers.Login(app))
 	s.router.Post("/Register", handlers.Register(app))
 }

@@ -23,7 +23,7 @@ func JWTAuth(a *server.App) func(http.Handler) http.Handler {
 		fn := func(w http.ResponseWriter, r *http.Request) {
 			const op = "rest.JWTAuth"
 
-			if r.URL.Path == "/Login" || r.URL.Path == "/Register" {
+			if r.URL.Path == "/Login" || r.URL.Path == "/Register" || r.URL.Path == "/Health" {
 				next.ServeHTTP(w, r)
 
 				return

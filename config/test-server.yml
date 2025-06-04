@@ -6,6 +6,7 @@ env: "test"
 version: "v0.0.1"
 domain: "localhost"
 database:
+  test: true
   path: "./database/test.db"
 jwt:
   enabled: true

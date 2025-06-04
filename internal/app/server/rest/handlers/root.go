@@ -2,9 +2,8 @@ package handlers
 
 import (
 	"fmt"
-	"net/http"
-
 	"github.com/RomanPlyazhnic/todolist/internal/app/server"
+	"net/http"
 )
 
 func Root(a *server.App) func(w http.ResponseWriter, r *http.Request) {
