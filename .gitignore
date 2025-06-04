@@ -1,1 +1,4 @@
+go.sum
+*.db
+*.db-journal
 config/server.yml
