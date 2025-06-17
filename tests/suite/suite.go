@@ -26,9 +26,8 @@ type Suite struct {
 
 func New(t *testing.T) *Suite {
 	t.Helper()
-	// TODO:
-	// 1) make tests parallel
-	// 2) run only one server instance
+	// TODO: make tests parallel
+	// TODO: run only one server instance
 
 	cfg, err := config.Get(configPath())
 	if err != nil {
