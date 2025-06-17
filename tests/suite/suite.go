@@ -1,8 +1,10 @@
+// Test suite for functi9onal tests
+// Each test case is running in an isolated database, which is cleared after the test is finished
+
 package suite
 
 import (
 	"context"
-	"flag"
 	"fmt"
 	_ "github.com/mattn/go-sqlite3"
 	"net/http"
@@ -24,7 +26,9 @@ type Suite struct {
 
 func New(t *testing.T) *Suite {
 	t.Helper()
-	t.Parallel()
+	// TODO:
+	// 1) make tests parallel
+	// 2) run only one server instance
 
 	cfg, err := config.Get(configPath())
 	if err != nil {
@@ -80,11 +84,6 @@ func waitServerStarted(a *server.App) {
 func configPath() string {
 	var path string
 	path = os.Getenv("CONFIG_PATH")
-
-	if path == "" {
-		flag.StringVar(&path, "config", "", "config path")
-		flag.Parse()
-	}
 
 	if path == "" {
 		path = filepath.Join("config", "test-server.yml")

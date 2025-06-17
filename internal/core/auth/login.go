@@ -17,7 +17,7 @@ func Login(_ context.Context, a *server.App, username, password string) (jwtToke
 
 	userId, err := checkCredentials(a, username, password)
 	if err != nil {
-		a.Logger.Info(fmt.Sprintf("failed to check credentials", op, err))
+		a.Logger.Info("failed to check credentials", op, err)
 
 		return "", fmt.Errorf("%s: %w", op, err)
 	}
@@ -33,7 +33,7 @@ func Login(_ context.Context, a *server.App, username, password string) (jwtToke
 	return jwtToken, nil
 }
 
-// checkCredentials finds user by username, checks password and returns user_id if password is correct.
+// checkCredentials finds user by username, checks password and returns user_id if the password is correct.
 // Otherwise - return error
 func checkCredentials(a *server.App, username, password string) (userId int, err error) {
 	const op = "auth.checkCredentials"
@@ -41,14 +41,14 @@ func checkCredentials(a *server.App, username, password string) (userId int, err
 	var storedHash string
 	err = a.DB.QueryRow("SELECT id, password_hash FROM users WHERE username = $1", username).Scan(&userId, &storedHash)
 	if err != nil {
-		a.Logger.Info(fmt.Sprintf("failed to retrieve password hash", op, err))
+		a.Logger.Info("failed to retrieve password hash", op, err)
 
 		return userId, fmt.Errorf("%s: %w", op, err)
 	}
 
 	err = bcrypt.CompareHashAndPassword([]byte(storedHash), []byte(password))
 	if err != nil {
-		a.Logger.Info(fmt.Sprintf("failed to compare password and password hash", op, err))
+		a.Logger.Info("failed to compare password and password hash", op, err)
 
 		return userId, fmt.Errorf("%s: %w", op, err)
 	}

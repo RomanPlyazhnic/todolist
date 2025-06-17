@@ -52,7 +52,7 @@ func New(app *server.App, cfg *config.Data) *RestServer {
 
 // Start launches the server
 func (s *RestServer) Start(app *server.App) {
-	const op = "app.stop"
+	const op = "server.start"
 
 	app.Logger.Info("starting server")
 	err := s.srv.ListenAndServe()
@@ -65,7 +65,7 @@ func (s *RestServer) Start(app *server.App) {
 
 // Shutdown stops the server
 func (s *RestServer) Shutdown(app *server.App) {
-	const op = "app.shutdown"
+	const op = "server.shutdown"
 
 	app.Logger.Info("shutting down...", op, true)
 	if err := s.srv.Shutdown(context.Background()); err != nil {

@@ -54,6 +54,8 @@ func (a *App) Run() {
 	}()
 
 	defer func() {
+		a.Logger.Info("shutting down the app", op, true)
+
 		err := a.DB.Stop(a)
 		if err != nil {
 			a.Logger.Error("failed to stop database", op, err)

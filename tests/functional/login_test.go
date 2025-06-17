@@ -6,6 +6,7 @@ import (
 	"github.com/go-faker/faker/v4"
 	"github.com/stretchr/testify/assert"
 	"net/http"
+	"slices"
 	"strings"
 	"testing"
 
@@ -60,7 +61,7 @@ func TestLogin_RegisterLoginHappyPath(t *testing.T) {
 
 	assert.Equal(t, 200, resp.StatusCode)
 
-	// Access service by logined user
+	// Access service
 	client := &http.Client{}
 	url = fmt.Sprintf("http://%s:%d", s.App.Config.Domain, s.App.Config.Port)
 	req, err := http.NewRequest("GET", url, nil)
@@ -77,6 +78,85 @@ func TestLogin_RegisterLoginHappyPath(t *testing.T) {
 	}
 
 	assert.Equal(t, 200, resp.StatusCode)
+}
+
+func TestLogin_RegisterUserExists(t *testing.T) {
+	s := suite.New(t)
+
+	// Register user
+	r := RegisterRequest{}
+	err := faker.FakeData(&r)
+	if err != nil {
+		t.Fatalf("Expected no error, got %v", err)
+	}
+	jsonStr, err := json.Marshal(r)
+	reqBody := strings.NewReader(string(jsonStr))
+
+	url := fmt.Sprintf("http://%s:%d/Register", s.App.Config.Domain, s.App.Config.Port)
+	resp, err := http.Post(url, "application/json", reqBody)
+	closeResp(t, resp)
+	if err != nil {
+		t.Fatalf("Expected no error, got %v", err)
+	}
+
+	assert.Equal(t, 200, resp.StatusCode)
+
+	// Register user with same username
+	resp, err = http.Post(url, "application/json", reqBody)
+	closeResp(t, resp)
+	if err != nil {
+		t.Fatalf("Expected no error, got %v", err)
+	}
+
+	assert.Equal(t, 400, resp.StatusCode)
+}
+
+func TestLogin_LoginWrongCredentials(t *testing.T) {
+	s := suite.New(t)
+
+	// Register user
+	r := RegisterRequest{}
+	err := faker.FakeData(&r)
+	if err != nil {
+		t.Fatalf("Expected no error, got %v", err)
+	}
+	jsonStr, err := json.Marshal(r)
+	reqBody := strings.NewReader(string(jsonStr))
+
+	url := fmt.Sprintf("http://%s:%d/Register", s.App.Config.Domain, s.App.Config.Port)
+	resp, err := http.Post(url, "application/json", reqBody)
+	closeResp(t, resp)
+	if err != nil {
+		t.Fatalf("Expected no error, got %v", err)
+	}
+
+	assert.Equal(t, 200, resp.StatusCode)
+
+	// Login with incorrect credentials
+	l := LoginRequest{
+		Username: r.Username,
+		Password: r.Password + "1",
+	}
+	jsonStr, err = json.Marshal(l)
+	reqBody = strings.NewReader(string(jsonStr))
+
+	url = fmt.Sprintf("http://%s:%d/Login", s.App.Config.Domain, s.App.Config.Port)
+	resp, err = http.Post(url, "application/json", reqBody)
+	closeResp(t, resp)
+	if err != nil {
+		t.Fatalf("Expected no error, got %v", err)
+	}
+
+	assert.Equal(t, 400, resp.StatusCode)
+
+	// Fail to access service
+	cookies := resp.Cookies()
+	cookieIndex := slices.IndexFunc(cookies, func(c *http.Cookie) bool {
+		return c.Name == "jwt"
+	})
+
+	// jwt cookie shouldn't exist
+	assert.Equal(t, -1, cookieIndex)
 }
 
 func closeResp(t *testing.T, resp *http.Response) {
