@@ -1,4 +1,4 @@
-// Test suite for functi9onal tests
+// Test suite for functional tests
 // Each test case is running in an isolated database, which is cleared after the test is finished
 
 package suite

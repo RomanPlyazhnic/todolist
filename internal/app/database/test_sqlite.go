@@ -1,3 +1,5 @@
+// Test SQL database, which is used like a regular SQLite, but is cleared when the database is stopped
+
 package database
 
 import (
