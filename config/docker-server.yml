@@ -1,0 +1,13 @@
+name: "todolist1"
+protocol: "rest"
+port: 8080
+timeout: "10s"
+env: "dev"
+version: "v0.0.1"
+domain: "localhost"
+database:
+  test: false
+  path: "./data/main.db"
+jwt:
+  enabled: true
+  duration: "1h"

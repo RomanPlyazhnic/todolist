@@ -54,7 +54,7 @@ func New(app *server.App, cfg *config.Data) *RestServer {
 func (s *RestServer) Start(app *server.App) {
 	const op = "server.start"
 
-	app.Logger.Info("starting server")
+	app.Logger.Info("starting server, listening on ", op, s.srv.Addr)
 	err := s.srv.ListenAndServe()
 	if err != http.ErrServerClosed {
 		app.Logger.Error("%s: %v", op, err)

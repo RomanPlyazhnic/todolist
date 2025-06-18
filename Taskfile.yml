@@ -3,6 +3,7 @@ version: '3'
 tasks:
   server:
     cmds:
+#      WARNING: better not to store JWT_SECRET inside config
       - JWT_SECRET=12345678 go run ./cmd/server/main.go --config=./config/server.yml
   migrate:
     cmds:
@@ -10,3 +11,9 @@ tasks:
   test-migrate:
     cmds:
       - go run ./cmd/migrate/main.go --config=./config/test-server.yml
+  docker-build:
+    cmds:
+      - docker build -t todolist:0.0.1 .
+  docker-run:
+    cmds:
+      - docker run -p 8080:8080 -e CONFIG_PATH=./config/docker-server.yml todolist:0.0.1
