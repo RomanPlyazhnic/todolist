@@ -8,26 +8,19 @@ import (
 	"github.com/go-playground/validator/v10"
 )
 
-// RegisterRequest represents request JSON body format
-type RegisterRequest struct {
+// Register represents request JSON body format
+type Register struct {
 	Username string `json:"username" validate:"required"`
 	Password string `json:"password" validate:"required,min=8"`
 }
 
-// TODO: remove RegisterResult and rename RegisterRequest to Register
-// RegisterResult represents fields and errors
-type RegisterResult struct {
-	Username string
-	Password string
-}
-
-// Validate checks if RegisterRequest is valid
-// Returns RegisterRequest and error if it is not valid
-// RegisterRequest contains fields with errors
-func (l *RegisterRequest) Validate() (validateResult RegisterResult, err error) {
+// Validate checks if Register is valid
+// Returns Register and error if it is not valid
+// Register contains fields with errors
+func (l *Register) Validate() (validateResult Register, err error) {
 	const op = "contracts.Login.Validate"
 
-	validateResult = RegisterResult{}
+	validateResult = Register{}
 
 	validate := validator.New(validator.WithRequiredStructEnabled())
 	err = validate.Struct(l)

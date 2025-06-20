@@ -19,7 +19,7 @@ func Register(a *server.App) func(w http.ResponseWriter, r *http.Request) {
 	return func(w http.ResponseWriter, r *http.Request) {
 		const op = "rest.Register"
 
-		registerRequest := contracts.RegisterRequest{}
+		registerRequest := contracts.Register{}
 
 		dec := json.NewDecoder(r.Body)
 		err := dec.Decode(&registerRequest)

@@ -15,7 +15,7 @@ import (
 // Register checks if user credentials for a new user are valid and user is unique
 // If credentials are valid - returns nil
 // If credentials are not valid - returns error
-func Register(_ context.Context, a *server.App, reg contracts.RegisterRequest) error {
+func Register(_ context.Context, a *server.App, reg contracts.Register) error {
 	const op = "auth.Register"
 
 	passHash, err := hashPassword(reg.Password)

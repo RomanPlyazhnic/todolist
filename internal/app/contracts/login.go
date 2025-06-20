@@ -7,26 +7,19 @@ import (
 	"github.com/go-playground/validator/v10"
 )
 
-// LoginRequest represents request JSON body format
-type LoginRequest struct {
+// Login represents request JSON body format
+type Login struct {
 	Username string `json:"username" validate:"required"`
 	Password string `json:"password" validate:"required"`
 }
 
-// TODO: remove LoginResult and rename LoginRequest to Login
-// LoginResult represents fields and errors
-type LoginResult struct {
-	Username string
-	Password string
-}
-
-// Validate checks if LoginRequest is valid
-// Returns LoginResult and error if it is not valid
-// LoginResult contains fields with errors
-func (l *LoginRequest) Validate() (validateResult LoginResult, err error) {
+// Validate checks if Login is valid
+// Returns Login and error if it is not valid
+// Login contains fields with errors
+func (l *Login) Validate() (validateResult Login, err error) {
 	const op = "contracts.Login.Validate"
 
-	validateResult = LoginResult{}
+	validateResult = Login{}
 
 	validate := validator.New(validator.WithRequiredStructEnabled())
 	err = validate.Struct(l)

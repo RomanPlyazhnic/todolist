@@ -13,7 +13,7 @@ import (
 )
 
 // Login returns http handler
-// Accepts JSON LoginRequest body
+// Accepts JSON Login body
 // Checks if login and password are correct and returns JWT token in the header
 func Login(a *server.App) func(w http.ResponseWriter, r *http.Request) {
 	return func(w http.ResponseWriter, r *http.Request) {
@@ -21,7 +21,7 @@ func Login(a *server.App) func(w http.ResponseWriter, r *http.Request) {
 
 		w.Header().Set("Accept", "application/json")
 
-		loginRequest := contracts.LoginRequest{}
+		loginRequest := contracts.Login{}
 
 		dec := json.NewDecoder(r.Body)
 		err := dec.Decode(&loginRequest)
