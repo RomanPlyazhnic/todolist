@@ -79,4 +79,5 @@ func (s *RestServer) handleRoutes(app *server.App) {
 	s.router.Get("/", handlers.Root(app))
 	s.router.Post("/Login", handlers.Login(app))
 	s.router.Post("/Register", handlers.Register(app))
+	s.router.Post("/CreateTodoList", handlers.CreateTodoList(app))
 }

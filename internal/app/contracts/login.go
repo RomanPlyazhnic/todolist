@@ -13,6 +13,7 @@ type LoginRequest struct {
 	Password string `json:"password" validate:"required"`
 }
 
+// TODO: remove LoginResult and rename LoginRequest to Login
 // LoginResult represents fields and errors
 type LoginResult struct {
 	Username string

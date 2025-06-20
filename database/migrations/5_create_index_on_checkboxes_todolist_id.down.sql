@@ -1,0 +1,1 @@
+DROP INDEX IF EXISTS checkboxes_todolist_id;

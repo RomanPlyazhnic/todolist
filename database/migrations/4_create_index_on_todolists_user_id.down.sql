@@ -1,0 +1,1 @@
+DROP INDEX IF EXISTS idx_todolists_user_id;

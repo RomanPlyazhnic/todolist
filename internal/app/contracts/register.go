@@ -14,6 +14,7 @@ type RegisterRequest struct {
 	Password string `json:"password" validate:"required,min=8"`
 }
 
+// TODO: remove RegisterResult and rename RegisterRequest to Register
 // RegisterResult represents fields and errors
 type RegisterResult struct {
 	Username string
