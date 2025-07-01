@@ -8,7 +8,6 @@ import (
 )
 
 // TODO: add check whether current user is able to create todolist for provided user_id
-// TODO: add tests
 // TODO: fill checkboxes with todolist id
 func Create(a *server.App, todolist contracts.TodoList) (err error) {
 	const op = "auth.createUser"
@@ -27,6 +26,7 @@ VALUES ($1, $2)`
 		return fmt.Errorf("failed to create todolist", op, err)
 	}
 
+	// TODO: [WARNING] DO IN SINGLE QUERY
 	for _, checkbox := range todolist.Checkboxes {
 		_, err = a.DB.Exec(sqlStatementCheckboxes, checkbox.Checked, checkbox.Text)
 		if err != nil {

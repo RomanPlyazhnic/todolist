@@ -1,4 +1,5 @@
 // Validate create todolist request
+
 package contracts
 
 import (

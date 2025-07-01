@@ -5,11 +5,11 @@ package handlers
 import (
 	"encoding/json"
 	"fmt"
-	"github.com/RomanPlyazhnic/todolist/internal/core/todolist"
 	"net/http"
 
 	"github.com/RomanPlyazhnic/todolist/internal/app/contracts"
 	"github.com/RomanPlyazhnic/todolist/internal/app/server"
+	"github.com/RomanPlyazhnic/todolist/internal/core/todolist"
 )
 
 // CreateTodoList handles the creation of a new TodoList using data from the HTTP request body.

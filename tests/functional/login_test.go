@@ -24,7 +24,7 @@ type LoginRequest struct {
 }
 
 func TestLogin_RegisterLoginHappyPath(t *testing.T) {
-	s := suite.New(t)
+	s := suite.NewFunctional(t)
 
 	// Register user
 	r := RegisterRequest{}
@@ -81,7 +81,7 @@ func TestLogin_RegisterLoginHappyPath(t *testing.T) {
 }
 
 func TestLogin_RegisterUserExists(t *testing.T) {
-	s := suite.New(t)
+	s := suite.NewFunctional(t)
 
 	// Register user
 	r := RegisterRequest{}
@@ -112,7 +112,7 @@ func TestLogin_RegisterUserExists(t *testing.T) {
 }
 
 func TestLogin_LoginWrongCredentials(t *testing.T) {
-	s := suite.New(t)
+	s := suite.NewFunctional(t)
 
 	// Register user
 	r := RegisterRequest{}

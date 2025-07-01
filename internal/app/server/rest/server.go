@@ -4,6 +4,7 @@ package rest
 
 import (
 	"context"
+	"errors"
 	"github.com/go-chi/chi/v5"
 	"github.com/go-chi/chi/v5/middleware"
 	"github.com/go-chi/httplog/v2"
@@ -56,7 +57,7 @@ func (s *RestServer) Start(app *server.App) {
 
 	app.Logger.Info("starting server, listening on ", op, s.srv.Addr)
 	err := s.srv.ListenAndServe()
-	if err != http.ErrServerClosed {
+	if !errors.Is(err, http.ErrServerClosed) {
 		app.Logger.Error("%s: %v", op, err)
 		panic(err)
 	}
